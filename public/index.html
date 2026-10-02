@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A hardware-free, 3×3 controller for Codex. Explore projects, follow task states, and test the attention workflow.">
+  <meta name="theme-color" content="#eef1f5">
+  <title>Codex Agent Keypad — Interactive prototype</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23161b22'/%3E%3Cpath d='m26 20-12 12 12 12m12-24 12 12-12 12' fill='none' stroke='%23b7f398' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#keypad">Skip to keypad</a>
+  <header class="site-header">
+    <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">⌘</span> Agent Keypad <span class="version">/ 001</span></a>
+    <div class="header-meta"><span class="prototype-dot"></span> A CODEX HARDWARE EXPERIMENT</div>
+    <button id="about-button" class="text-button">About this prototype <span aria-hidden="true">↗</span></button>
+  </header>
+  <main>
+    <div class="intro">
+      <div><p class="eyebrow">LESS SWITCHING. MORE SIGNAL.</p><h1>Your agents.<br class="mobile-break"> Within reach.</h1><p class="intro-copy">A small control surface for work happening in Codex.</p></div>
+      <div class="mode-control" role="group" aria-label="Data source"><button id="demo-mode" aria-pressed="true">Demo</button><button id="live-mode" aria-pressed="false"><span class="small-dot"></span> Local Codex</button></div>
+    </div>
+    <section class="workspace" aria-label="Keypad simulator">
+      <div class="controller-area">
+        <div class="device-context"><nav id="breadcrumbs" aria-label="Keypad location"></nav><span id="page-label">HOME</span></div>
+        <div class="device">
+          <div class="device-top"><span class="device-wordmark">CODEX <span> / AGENT KEYPAD</span></span><span id="device-status"><i></i> DEMO</span></div>
+          <div id="keypad" class="keypad" tabindex="-1" aria-label="3 by 3 keypad"></div>
+          <div class="device-bottom"><span>PROTOTYPE 01</span><span class="device-grip" aria-hidden="true">||||||||||||||||</span><span>3 × 3</span></div>
+        </div>
+        <div class="keyboard-hint"><span><kbd>1</kbd>–<kbd>9</kbd> press a key</span><span><kbd>Esc</kbd> go back</span><span><kbd>←</kbd><kbd>→</kbd> change page</span></div>
+      </div>
+      <aside class="inspector" aria-label="Task inspector">
+        <div class="inspector-heading"><span class="eyebrow" id="inspector-label">AT A GLANCE</span><span class="source-badge" id="source-badge">SAMPLE DATA</span></div>
+        <div id="inspector-body"></div>
+        <div id="grouping-control" hidden><label for="grouping-mode">Show</label> <select id="grouping-mode"><option value="projects">Saved Codex projects</option><option value="folders">All saved folders</option></select><p id="catalog-note" class="capability-note"></p></div>
+        <div id="runs-control" hidden><label><input id="show-all-runs" type="checkbox"> Show every saved run</label><p id="runs-note" class="capability-note"></p></div>
+          <div id="connection-panel" hidden><p id="connection-message"></p><button id="connect-button" class="primary-button">Read saved tasks <span>↗</span></button></div>
+        <div class="simulation-panel" id="simulation-panel">
+          <div class="section-label">TRY A STATE CHANGE <span>↙</span></div>
+          <p id="simulation-target">Sample task: ECS deployment</p>
+          <div class="simulation-actions"><button data-sim="working">Working</button><button data-sim="needs-attention">Needs you</button><button data-sim="done">Done</button><button data-sim="error">Error</button></div>
+          <div class="simulation-footer"><button id="disconnect-button" class="text-button">Simulate disconnect</button><button id="reset-button" class="text-button">Reset</button></div>
+        </div>
+      </aside>
+    </section>
+    <div class="bottom-bar"><div class="legend" aria-label="Task states"><span><i class="dot attention"></i>Needs you</span><span><i class="dot working"></i>Working</span><span><i class="dot done"></i>Done</span><span><i class="dot idle"></i>Idle</span><span><i class="dot error"></i>Error</span><span><i class="dot unknown"></i>Unknown</span></div><button id="debug-toggle" class="text-button" aria-expanded="false" aria-controls="debug-panel">Show diagnostics <span aria-hidden="true">⌁</span></button></div>
+    <section id="debug-panel" class="debug-panel" hidden><div><h2>Event stream</h2><div id="event-log"></div></div><div><h2>Current key model</h2><pre id="raw-model"></pre></div></section>
+    <footer><span>Software first. Hardware next.</span><span>Local by design <span aria-hidden="true">·</span> No keypad required</span></footer>
+  </main>
+  <dialog id="about-dialog"><button id="close-about" class="dialog-close" aria-label="Close about">×</button><p class="eyebrow">THE EXPERIMENT</p><h2>One glance.<br>One project.<br>One task.</h2><p>This prototype asks whether a nine-key controller can make multiple Codex tasks easier to follow.</p><p>Press Codex, choose a project, then open a real local task in Codex. Attention rolls up through the hierarchy. The last row stays available for navigation.</p><dl><dt>Working today</dt><dd>Interactive simulator, sample state transitions, and local discovery of saved Codex tasks.</dd><dt>Still to prove</dt><dd>Desktop-wide live state, exact desktop project membership, and physical Logitech integration.</dd></dl><p class="dialog-note">Independent portfolio experiment. Not affiliated with OpenAI or Logitech. Sample mode contains fictional tasks.</p></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript>This interactive demo requires JavaScript.</noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

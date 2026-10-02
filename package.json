@@ -1,0 +1,22 @@
+{
+  "name": "codex-agent-keypad",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A hardware-free Codex keypad with protected metadata reading and optional activity observations.",
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "scripts": {
+    "dev": "node --watch server.ts",
+    "start": "node server.ts",
+    "start:local": "node server.ts --local-read",
+    "start:events": "node server.ts --local-read --events",
+    "start:desktop": "node server.ts --local-read --desktop-status",
+    "test": "node --test tests/*.test.*",
+    "build": "node scripts/build.mjs",
+    "probe": "node scripts/probe.ts",
+    "prove:hooks": "node scripts/prove-hooks.ts",
+    "prove:observer": "node scripts/prove-runtime-observer.mjs"
+  }
+}

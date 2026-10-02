@@ -1,0 +1,17 @@
+{
+  "name": "codex-keypad-observer",
+  "version": "0.1.0",
+  "description": "Send bounded activity observations to the local Codex Agent Keypad bridge.",
+  "author": {
+    "name": "Local developer"
+  },
+  "interface": {
+    "displayName": "Codex Keypad Observer",
+    "shortDescription": "Observe local activity for the keypad demo.",
+    "longDescription": "Background lifecycle observer. No task control, transcript access, or approval decisions. Requires macOS and the local keypad bridge.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Explain the keypad observer and its activity coverage."
+  }
+}
