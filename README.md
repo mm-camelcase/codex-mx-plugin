@@ -1,80 +1,126 @@
-# Codex Agent Keypad
+<p align="center">
+  <img src="docs/hero/keypad.webp" width="100%" alt="Animated 3D render of a nine-key keypad. A key pulsing amber is pressed, the keys flip to show Codex projects, then tasks, and one task moves from Needs you to Working to Done.">
+</p>
 
-**A small control surface for work happening in Codex.**
+<h1 align="center">Codex Agent Keypad</h1>
 
-A hardware-free prototype for a future Logitech keypad integration. Navigate **Home → Codex → Project → Task**, see attention roll up through the hierarchy, and try the interaction before connecting a physical device.
+<p align="center">
+  <strong>Nine keys for keeping track of your coding agents.</strong><br>
+  See which one needs you. Get to it in three presses.
+</p>
 
-## Try the demo
+<p align="center">
+  <img alt="Status: prototype" src="https://img.shields.io/badge/status-prototype-f4ba6b?style=flat-square&labelColor=181d24">
+  <img alt="Runs in the browser, no keypad required" src="https://img.shields.io/badge/keypad-not%20required-b7f398?style=flat-square&labelColor=181d24">
+  <img alt="Zero dependencies" src="https://img.shields.io/badge/dependencies-0-92bdfc?style=flat-square&labelColor=181d24">
+</p>
 
-Node.js 24.16+. No dependencies or API key required.
+<p align="center">
+  <a href="#why-i-built-this">Why</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#try-it">Try it</a> ·
+  <a href="#whats-real-today">What's real today</a> ·
+  <a href="docs/TECHNICAL.md">Technical guide</a>
+</p>
+
+<br>
+
+## Why I built this
+
+I manage a lot of AI agents at once, often tens of them, spread across different applications. I drive most of them by voice, and I spend too much of the day flicking between windows to find the one that has stopped and is waiting for me.
+
+I wanted a streamlined way to manage them: something I could glance at, and reach for.
+
+Then Logitech's MX keypad came out, with nine keys that are each a tiny screen. That gave me a concrete use case: could I program a plugin that turns it into a control surface for my agents?
+
+This is that experiment, starting with Codex.
+
+> [!NOTE]
+> The physical keypad isn't connected yet. What's here is the software side, running as an emulator in your browser. You don't need any hardware to try it.
+
+<br>
+
+## How it works
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <img src="docs/hero/step-1.webp" alt="Close-up of the keypad's Home page. The Codex key glows amber and reads 2 Needs you.">
+      <h3>1 · Glance</h3>
+      <p>Amber means an agent is waiting for you. The colour rolls up, so one key tells you about every task underneath it.</p>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/hero/step-2.webp" alt="The keys mid-flip, turning over to show Codex projects such as Infrastructure and Platform, each with its own status colour.">
+      <h3>2 · Press</h3>
+      <p>Follow the colour down: Codex, then the project, then the task. It is never more than three presses away.</p>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/hero/step-3.webp" alt="Close-up of the task keys. ECS deployment now glows green and reads Done.">
+      <h3>3 · Act</h3>
+      <p>The task's key takes you to that conversation in Codex. Unblock it, the amber clears, and you're back to a quiet keypad.</p>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/hero/legend.svg" width="820" alt="Key states: Needs you, Working, Done, Error, Idle, Unknown">
+</p>
+
+The bottom row never changes: **Back**, **Previous**, **Next**. Your hand learns the layout once.
+
+<br>
+
+## Try it
+
+You need Node.js 24.16 or newer. No account, API key, or keypad.
 
 ```sh
 npm install
 npm start
 ```
 
-Open [localhost:3000](http://localhost:3000). Press **Codex → Infrastructure**, select a task, and try the sample state buttons. **1–9** press keys, **Esc** goes back, and **← / →** change pages.
+Open [localhost:3000](http://localhost:3000) and press **Codex → Infrastructure**. Number keys **1–9** press the keys, **Esc** goes back.
 
-## Read your saved Codex tasks
+<p align="center">
+  <img src="docs/hero/emulator.webp" width="820" alt="The browser emulator: a three-by-three keypad showing the Infrastructure project's tasks, with ECS deployment highlighted as Needs you and a task inspector alongside.">
+</p>
 
-On macOS, stop the demo server and run:
+The demo uses made-up tasks. On a Mac it can also read your own saved Codex tasks; the [technical guide](docs/TECHNICAL.md#four-ways-to-run-it) covers that.
 
-```sh
-npm run start:local
-```
+<br>
 
-The local page selects **Local Codex** and connects when the bridge starts. The reader runs under macOS restrictions that deny filesystem writes and network access. It opens the metadata database read-only, never starts Codex, and never edits or repairs task paths. If a refresh fails, the page briefly shows stale data and the bridge retries through the same protected reader. Plain `npm start` keeps local-data access off.
+## Built carefully
 
-This reads **saved task metadata**, so real task states initially show **Unknown**. Projects, names, saved order, and task assignments refresh automatically every 10 seconds. No manual catalog is needed. Repeated task titles, such as scheduled daily runs, occupy one key by default; **Show every saved run** reveals every distinct task. Nothing is removed from Codex. **All saved folders** keeps unmatched history accessible. The stored order can differ from the desktop sidebar.
+Reading your real agent data is the risky part, so that is where most of the work went.
 
-## Try experimental desktop status
+- **It can only read.** The part that touches Codex's data runs in a macOS sandbox that blocks every file write and all network access. If the sandbox isn't available, it doesn't run.
+- **It doesn't guess.** Anything the keypad hasn't actually seen shows as **Unknown**, and what it has seen expires rather than going stale.
+- **The tests try to break it.** They deliberately attempt to overwrite, delete, rename, and corrupt test copies of the data. Every attempt is blocked.
+- **Nothing to install.** No dependencies; it runs on plain Node.
 
-```sh
-npm run start:desktop
-```
+The first approach I tried was retired after a metadata-path incident. That is [written up](docs/METADATA-INCIDENT.md) too.
 
-The local bridge connects on startup and the browser opens in **Local Codex** mode. On the project keypad, the newest task in each visible project is checked if it changed within the last day; opening a project checks its most recent visible task, and selecting any task checks it on demand. The keypad can show **Working**, **Needs you** (approval or user input), **Idle**, or **Error** from Codex's live runtime flags. Checks run one at a time and expire after 45 seconds; unchecked tasks remain **Unknown**. Counts are labelled **seen**, since this is not an all-task observer.
+<br>
 
-The status worker can send only initialization and one-task follow/status requests to Codex's private local IPC socket. macOS denies it all filesystem writes. It discards conversation payloads and stops at a 32 MB frame limit. This protocol is undocumented and may change; the demo fails closed to Unknown. It has been tested against a real running desktop task, but approval and input-wait transitions still need live end-to-end validation. See [desktop IPC evidence and limits](docs/DESKTOP-IPC.md).
+## What's real today
 
-## Optional activity feed
+| | |
+|---|---|
+| **Working** | The emulator, with navigation, attention roll-up, and sample state changes.<br>Reading your saved Codex projects and tasks on macOS. |
+| **Experimental** | Live status from the Codex desktop app (Working, Needs you, Idle, Error).<br>An activity feed from Codex hooks.<br>Opening a task in Codex from its key. |
+| **Not yet** | The physical keypad. Logitech hardware is untested and the adapter is a placeholder.<br>Other apps. The Claude, VS Code, Terminal, GitHub, and AWS keys are placeholders. |
 
-```sh
-npm run start:events
-```
+The [technical guide](docs/TECHNICAL.md#whats-proven-and-what-isnt) has the full detail on what has been proven and what hasn't.
 
-The companion **codex-keypad-observer** plugin sends small activity observations through a private local socket. Install and review its hooks in Codex before using a new task to try it. Labels say **Activity seen**, **Approval seen**, or **Stop seen**, then expire to Unknown after 30 seconds while retaining the last event for context. They do not claim continuous running status or successful completion. Sanitized observations are cached in this project’s ignored `.local/` directory; Codex files are never written. See [setup and evidence](docs/OBSERVER.md). Run `node server.ts --local-read --events --desktop-status` to combine both feeds.
+<br>
 
-## Standalone portfolio version
+## Go deeper
 
-```sh
-npm run build
-```
+- [Technical guide](docs/TECHNICAL.md): run modes, architecture, and how to verify the safety claims
+- [Safety evidence](docs/SAFETY.md)
+- [Investigation notes](INVESTIGATION.md)
+- [How the banner was made](docs/TECHNICAL.md#the-hero-animation): it's a three.js scene, and the source is in this repo
 
-Open or host **`dist/index.html`**. The single 46 KB file includes the interface and fictional data; no real task information is bundled. Real-data access requires the local bridge.
+---
 
-## Design and evidence
-
-```text
-Codex hooks → protected observer → private receiver ─┐
-Saved metadata → protected reader ──────────────────┼→ local bridge
-Desktop IPC → write-denied status worker ────────────┘
-                                                        └→ HTML / keypad model
-```
-
-Plain HTML/CSS/JavaScript and TypeScript/Node. The emulator and future device share the same key model. In Local Codex mode, a task key uses the [documented `codex://threads/<thread-id>` link](https://learn.chatgpt.com/docs/reference/commands#deep-links) to request its local chat; Demo mode stays inside the emulator. Browser automation blocked the external-app jump, so that click still needs manual verification in the desktop app. Logitech hardware compatibility remains unverified. The desktop IPC is an experimental integration, not an official plugin API or universal installer.
-
-The hook feed is proven with an isolated Codex runtime and has received real desktop task events after installation. Complete lifecycle coverage remains unverified.
-
-A separate [runtime observer proof](docs/RUNTIME-OBSERVER-PROOF.md) confirms accurate working, approval-wait, input-wait, and idle states when clients share one runtime. The optional private IPC path now tests status against the existing desktop without starting another Codex server.
-
-```sh
-npm test             # 34 fixture tests; stop the event bridge first
-npm run prove:hooks  # Isolated Codex + mock model; no account; stop bridge first
-npm run prove:observer # Shared-runtime experiment; isolated data and local mock model
-npm run probe        # Protected metadata read; aggregate counts only
-```
-
-Tests deliberately attempt writes, deletes, renames, truncation, SQL mutations, and sidecar creation against fixtures. All are blocked; fixture files remain byte-identical. Read [the safety evidence](docs/SAFETY.md) and [investigation](INVESTIGATION.md). The initial App Server approach was retired after a [metadata-path incident](docs/METADATA-INCIDENT.md).
-
-Independent portfolio experiment; not affiliated with OpenAI or Logitech.
+<p align="center"><sub>Independent portfolio experiment; not affiliated with OpenAI or Logitech.</sub></p>
