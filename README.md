@@ -19,6 +19,7 @@
   <a href="#why-i-built-this">Why</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#try-it">Try it</a> ·
+  <a href="#the-codex-plugin">The plugin</a> ·
   <a href="#whats-real-today">What's real today</a> ·
   <a href="docs/TECHNICAL.md">Technical guide</a>
 </p>
@@ -89,6 +90,30 @@ The demo uses made-up tasks. On a Mac it can also read your own saved Codex task
 
 <br>
 
+## The Codex plugin
+
+<img align="right" width="340" src="docs/hero/plugin-in-codex.png" alt="Codex's Plugins screen, Personal tab, listing Codex Keypad Observer under Created by you.">
+
+The keypad hears about your agents through a small Codex plugin I wrote, **Codex Keypad Observer**.
+
+It adds five hooks to Codex. When a task gets a prompt, uses a tool, asks for approval, or stops, the plugin passes a short note to the keypad: which task, what kind of event, and when.
+
+That is all it sends. Prompts, outputs, and transcripts are discarded, and it can't control a task or answer an approval for you.
+
+It's optional. The demo and reading your saved tasks both work without it.
+
+**To install it:**
+
+1. Copy `plugins/codex-keypad-observer` into `~/plugins/`.
+2. Add it to your personal plugin marketplace file.
+3. Restart Codex, open **Plugins → Personal**, and install it.
+4. Review and trust its five hooks.
+5. Run `npm run start:events`.
+
+The [full install steps](docs/OBSERVER.md#install-the-plugin) include the marketplace file to copy. macOS only.
+
+<br>
+
 ## Built carefully
 
 Reading your real agent data is the risky part, so that is where most of the work went.
@@ -107,7 +132,7 @@ The first approach I tried was retired after a metadata-path incident. That is [
 | | |
 |---|---|
 | **Working** | The emulator, with navigation, attention roll-up, and sample state changes.<br>Reading your saved Codex projects and tasks on macOS. |
-| **Experimental** | Live status from the Codex desktop app (Working, Needs you, Idle, Error).<br>An activity feed from Codex hooks.<br>Opening a task in Codex from its key. |
+| **Experimental** | Live status from the Codex desktop app (Working, Needs you, Idle, Error).<br>The Codex plugin's activity feed.<br>Opening a task in Codex from its key. |
 | **Not yet** | The physical keypad. Logitech hardware is untested and the adapter is a placeholder.<br>Other apps. The Claude, VS Code, Terminal, GitHub, and AWS keys are placeholders. |
 
 The [technical guide](docs/TECHNICAL.md#whats-proven-and-what-isnt) has the full detail on what has been proven and what hasn't.

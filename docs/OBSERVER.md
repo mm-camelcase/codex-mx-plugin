@@ -10,7 +10,49 @@ npm run start:events
 
 Open the printed localhost URL, choose **Local Codex**, then **Read saved tasks**. This starts the receiver and enables protected metadata reading; it does not install hooks. `npm start` remains sample-only, and `npm run start:local` remains metadata-only.
 
-Install **codex-keypad-observer** from the personal catalog and review its five hook definitions in Codex's hook settings. Trust only those definitions, then use a new disposable task to verify delivery. Existing tasks are not resumed or altered by the bridge. Hooks are skipped until trusted; installing a plugin alone does not trust them. [Codex hook review](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)
+The activity feed needs the companion plugin installed first.
+
+## Install the plugin
+
+Installing the plugin adds five hooks to Codex. It does not install the keypad demo inside Codex, and it does not write to Codex's task data. The bridge in this repository is a separate step. Requires macOS and `/usr/bin/python3`.
+
+These are the steps that produced the working installation described above. Codex's plugin flow may change between versions.
+
+1. **Copy the plugin folder** into your personal plugins folder.
+
+   ```sh
+   mkdir -p ~/plugins
+   cp -R plugins/codex-keypad-observer ~/plugins/
+   ```
+
+2. **List it in your personal marketplace.** Create `~/.agents/plugins/marketplace.json`, or add the `plugins` entry to the one you have:
+
+   ```json
+   {
+     "name": "personal",
+     "interface": { "displayName": "Personal" },
+     "plugins": [
+       {
+         "name": "codex-keypad-observer",
+         "source": { "source": "local", "path": "./plugins/codex-keypad-observer" },
+         "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+         "category": "Productivity"
+       }
+     ]
+   }
+   ```
+
+   The relative path resolves from your home directory, so it points at `~/plugins/codex-keypad-observer`, not at a folder inside `~/.agents/plugins`.
+
+3. **Restart Codex and install it.** Open **Plugins**, choose **Personal**, and install **Codex Keypad Observer**. Codex runs its own installed copy rather than the folder in this repository.
+
+   <img src="hero/plugin-in-codex.png" width="360" alt="Codex's Plugins screen, Personal tab, listing Codex Keypad Observer under Created by you.">
+
+4. **Review and trust the five hooks**: UserPromptSubmit, PreToolUse, PostToolUse, PermissionRequest, and Stop. Hooks are skipped until trusted; installing a plugin alone does not trust them, and changed definitions need review again. Trust only those definitions. [Codex hook review](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks)
+
+5. **Start the bridge** from this repository with `npm run start:events` and open the printed localhost URL.
+
+6. **Verify with a new, disposable task.** A prompt or tool action should produce a fresh observation on the keypad. Existing tasks are not resumed or altered by the bridge.
 
 The portable plugin source is `plugins/codex-keypad-observer/`. It uses the standard `hooks/hooks.json` layout and `${PLUGIN_ROOT}` paths. It requires macOS and `/usr/bin/python3`; the bridge requires Node 24.16+. The project is still a hardware prototype, not a completed Logitech integration. Projects now refresh automatically from the protected reader’s `projects` and `project_roots` tables every 10 seconds, along with explicit task project assignments when present. No manual catalog is loaded. Assignments take precedence over exact paths, followed by verified Git worktree relationships. Unmatched tasks remain accessible under All saved folders. Saved order may differ from the desktop sidebar; these are internal storage tables, not a supported public project API. Unsupported project schemas fall back to saved folders without repair.
 

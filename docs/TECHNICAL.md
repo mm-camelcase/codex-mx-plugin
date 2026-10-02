@@ -49,7 +49,7 @@ The status worker can send only initialization and one-task follow/status reques
 
 ### Optional activity feed — `npm run start:events`
 
-The companion **codex-keypad-observer** plugin sends small activity observations through a private local socket. Install and review its hooks in Codex before using a new task to try it. Labels say **Activity seen**, **Approval seen**, or **Stop seen**, then expire to Unknown after 30 seconds while retaining the last event for context. They do not claim continuous running status or successful completion. Sanitized observations are cached in this project's ignored `.local/` directory; Codex files are never written. See [setup and evidence](OBSERVER.md).
+The companion **codex-keypad-observer** plugin sends small activity observations through a private local socket. [Install it and trust its hooks](OBSERVER.md#install-the-plugin) in Codex before using a new task to try it. Labels say **Activity seen**, **Approval seen**, or **Stop seen**, then expire to Unknown after 30 seconds while retaining the last event for context. They do not claim continuous running status or successful completion. Sanitized observations are cached in this project's ignored `.local/` directory; Codex files are never written. See [setup and evidence](OBSERVER.md).
 
 Run `node server.ts --local-read --events --desktop-status` to combine both feeds.
 
